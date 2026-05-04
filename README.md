@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+💻 SUA Frontend - RecyConnect
+Esta es la interfaz de usuario del proyecto SUA, una aplicación web diseñada para la gestión de rutas y logística de reciclaje, construida con React y Vite.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🛠️ Tecnologías utilizadas
+Framework: React.js
 
-Currently, two official plugins are available:
+Herramienta de construcción: Vite
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Gestor de paquetes: pnpm
 
-## React Compiler
+Estado y Consultas: TanStack Query (React Query) / Zustand
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Estilos: CSS Modules / Tailwind (según tu configuración)
 
-## Expanding the ESLint configuration
+📋 Requisitos Previos
+Node.js (Versión 18 o superior)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+pnpm (npm install -g pnpm)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Backend en ejecución: Asegúrate de que el servidor NestJS esté corriendo para que el login funcione.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+⚙️ Configuración del Proyecto
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Instalación de dependencias
+   Instala los módulos necesarios con el siguiente comando:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+pnpm install
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2. Variables de Entorno
+   Crea un archivo .env en la raíz de esta carpeta. Es fundamental para la comunicación con la API:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Fragmento de código
+
+VITE_BASE_URL=http://localhost:3000
+[!IMPORTANT]
+
+Si cambias el puerto del Backend (NestJS), debes actualizar este archivo .env con la nueva URL para evitar errores de conexión (CORS).
+
+🏃‍♂️ Ejecución del Proyecto
+Para iniciar el servidor de desarrollo:
+
+Bash
+
+pnpm run dev
+La aplicación se abrirá normalmente en: http://localhost:5173
+
+🔑 Acceso al Sistema
+
+Puedes registrarte como nuevo usuario o utilizar las siguientes credenciales de prueba que ya están cargadas en la base de datos:
+
+Usuario Contraseña
+usuario1@gmail.com 123456789
+usuario2@gmail.com 123456789
+
+📂 Notas de Desarrollo
+Conexión API: Todas las peticiones apuntan a la ruta definida en VITE_BASE_URL.
+
+Autenticación: El sistema maneja sesiones mediante tokens (JWT). Si no puedes iniciar sesión, verifica que el backend esté devolviendo el token correctamente.
