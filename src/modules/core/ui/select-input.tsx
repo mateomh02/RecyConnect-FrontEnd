@@ -2,6 +2,7 @@ import { Button, Popover, PopoverContent, PopoverTrigger, Input, cn, Command, Co
 import { cloneElement, useEffect, useMemo, useRef, useState, type JSX } from 'react'
 import { type FieldError, type Noop } from 'react-hook-form'
 import { ChevronDown, ChevronUp, Clock } from 'lucide-react'
+
 interface SelectInputProps<Label extends string, Value extends string> {
   placeholder?: string
   className?: string
@@ -77,14 +78,15 @@ export const SelectInput = <Label extends string, Value extends string>(props: S
     [items, labelKey, valueKey, onValueChangeCallBack]
   )
 
+  // Actualizado para usar bordes y colores accesibles
   const buttonClassName = useMemo(
     () =>
       cn(
-        'flex justify-between px-3 font-normal',
-        'hover:border-tertiary-200 hover:bg-tertiary-50',
-        disabled && 'cursor-not-allowed bg-tertiary-400 opacity-50'
+        'flex h-10 justify-between px-3 font-normal border border-slate-300 bg-white text-slate-900 transition-colors',
+        'hover:border-slate-400 hover:bg-slate-50 focus:outline-none cursor-pointer',
+        (disabled || loading) && 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-100'
       ),
-    [value, placeholder, disabled, error]
+    [disabled, loading]
   )
 
   const updateWidth = () => {
@@ -108,7 +110,7 @@ export const SelectInput = <Label extends string, Value extends string>(props: S
 
   return (
     <div className={cn('flex flex-col gap-1', className)}>
-      <div className='relative flex flex-col justify-center'>
+      <div className='relative flex flex-col justify-center cursor-pointer'>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -123,7 +125,7 @@ export const SelectInput = <Label extends string, Value extends string>(props: S
               <div className='relative flex h-5 w-full items-center'>
                 <div className='flex max-w-[90%] items-center truncate'>
                   {leftIcon && (
-                    <span className='mr-2 shrink-0'>
+                    <span className='mr-2 shrink-0 text-slate-500'>
                       {cloneElement(leftIcon, {
                         size: 20,
                         strokeWidth: 1
@@ -132,24 +134,26 @@ export const SelectInput = <Label extends string, Value extends string>(props: S
                   )}
                   {valueItem ? (
                     loading ? (
-                      'Cargando...'
+                      <span className="text-slate-400">Cargando...</span>
                     ) : (
-                      memoizedOptions.find((item) => item[valueKey as Value] === valueItem)?.[labelKey as Label]
+                      <span className="font-medium text-slate-900">
+                        {memoizedOptions.find((item) => item[valueKey as Value] === valueItem)?.[labelKey as Label]}
+                      </span>
                     )
                   ) : (
-                    <span className='text-sm text-tertiary-100'>{placeholder}</span>
+                    <span className='text-sm text-slate-400 font-normal'>{placeholder}</span>
                   )}
                 </div>
                 {timeField ? (
                   <div className='absolute right-0 top-0.5'>
-                    <Clock className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                    <Clock className={cn('ml-2 h-4 w-4 shrink-0 text-slate-400', open && 'text-slate-600')} />
                   </div>
                 ) : (
                   <div className='absolute right-0 top-0.5'>
                     {!open ? (
-                      <ChevronDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      <ChevronDown className='ml-2 h-4 w-4 shrink-0 text-slate-400' />
                     ) : (
-                      <ChevronUp className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+                      <ChevronUp className='ml-2 h-4 w-4 shrink-0 text-slate-600' />
                     )}
                   </div>
                 )}
@@ -158,34 +162,39 @@ export const SelectInput = <Label extends string, Value extends string>(props: S
           </PopoverTrigger>
           <PopoverContent
             onOpenAutoFocus={(e) => e.preventDefault()}
-            className='rounded-sm bg-tertiary-50 p-1 bg-white z-50'
+            sideOffset={4}
+            className='rounded-md border border-slate-200 bg-white p-1 shadow-xl z-50 animate-in fade-in-50 zoom-in-95 duration-100'
             style={{
               minWidth: `${width}px`,
               width: `${width}px`,
               maxWidth: 'auto'
             }}
           >
-            <Command className='flex w-full flex-col gap-2'>
+            <Command className='flex w-full flex-col gap-1 bg-white'>
               {search && (
                 <Input
                   value={query}
-                  className='mb-1 rounded-sm'
+                  className='mb-1 h-9 rounded-sm border-slate-200 text-sm '
                   onChange={(evn) => setQuery(evn.target.value)}
                   placeholder='Buscar...'
                 />
               )}
-              <CommandEmpty className='text-center'>{loading ? 'Cargando' : 'Sin resultados.'}</CommandEmpty>
-              <CommandList>
+              <CommandEmpty className='py-3 text-center text-sm text-slate-500'>
+                {loading ? 'Cargando...' : 'Sin resultados.'}
+              </CommandEmpty>
+              <CommandList className="max-h-[250px] overflow-y-auto custom-scrollbar">
                 <CommandGroup className='p-0'>
                   {memoizedOptions.map((item) => {
                     const labelValue = item[labelKey as Label].trim()
                     const valueValue = item[valueKey as Value]
+                    const isSelected = valueValue === value
 
                     return (
                       <CommandItem
                         className={cn(
-                          'mb-0.5 mt-0.5 flex cursor-pointer items-center gap-2 rounded-sm py-2 pl-3 hover:bg-gray-100',
-                          valueValue === value && 'bg-gray-200'
+                          'mb-0.5 mt-0.5 flex cursor-pointer items-center gap-2 rounded-sm py-2 pl-3 text-sm text-slate-700 transition-colors outline-none select-none',
+                          'hover:bg-slate-100 hover:text-slate-900',
+                          isSelected && 'bg-slate-100 font-semibold text-secondary hover:bg-slate-200'
                         )}
                         key={valueValue as string}
                         value={valueValue as string}
@@ -208,7 +217,7 @@ export const SelectInput = <Label extends string, Value extends string>(props: S
           </PopoverContent>
         </Popover>
       </div>
-      {error && <span className='text-xs text-[#FF432C]'>*{error?.message ?? ''}</span>}
+      {error && <span className='text-xs font-medium text-[#FF432C] mt-0.5'>*{error?.message ?? ''}</span>}
     </div>
   )
 }
