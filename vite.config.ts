@@ -5,12 +5,14 @@ import path from 'node:path'
 
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss(),],
-  base: '/recy-connect',
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+export default defineConfig(({ mode }) => {
+  return {
+    plugins: [react(), tailwindcss(),],
+    base: mode === 'production' ? '/' : '/recy-connect',
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
+    }
   }
 })
