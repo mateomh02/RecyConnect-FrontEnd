@@ -16,7 +16,7 @@ function App() {
             element: <Providers />
           }
         ],
-        { basename: '/recy-connect' }
+        { basename: import.meta.env.MODE === 'production' ? '/' : '/recy-connect' }
       )
       }
 
