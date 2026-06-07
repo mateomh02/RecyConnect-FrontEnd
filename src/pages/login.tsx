@@ -2,6 +2,9 @@ import { LoginForm } from "@/modules"
 
 export const Login = () => {
     return (
-        <div><LoginForm /></div>
+        <div>
+            Es un cambio
+            <LoginForm />
+        </div>
     )
 }
